@@ -1,0 +1,193 @@
+<!-- IRR -->
+<!--<calcite-block heading="Investment Rate of Return (IRR)" summary="investment considerations" collapsible>
+  <calcite-icon slot="icon" icon="automation"></calcite-icon>
+  <div slot="control" class="suitability-slider-container">
+    <calcite-slider class="suitability-slider" min="0" max="9" value="5" ticks="3" snap label-handles></calcite-slider>
+  </div>
+
+  <calcite-tabs>
+    <calcite-tab-nav slot="tab-nav">
+      <calcite-tab-title icon-start="upload" active>Power Price Inputs</calcite-tab-title>
+      <calcite-tab-title icon-start="download">IIR Outputs</calcite-tab-title>
+    </calcite-tab-nav>
+
+    <calcite-tab active>
+      <div class="content-row content-static">
+        <div class="sub-option-panel content-col content-static">
+
+          <calcite-label class="sub-option-item" layout="inline" disable-spacing>
+            <div class="sub-option-label">Capacity</div>
+            <calcite-input class="sub-option-input" type="number" value="1000" placeholder="units" alignment="end"></calcite-input>
+          </calcite-label>
+
+          <calcite-label class="sub-option-item" layout="inline" disable-spacing>
+            <div class="sub-option-label">Capacity Factor</div>
+            <calcite-input class="sub-option-input" type="number" value="35" placeholder="units" alignment="end"></calcite-input>
+          </calcite-label>
+
+          <calcite-label class="sub-option-item" layout="inline" disable-spacing>
+            <div class="sub-option-label">Devex</div>
+            <calcite-input class="sub-option-input" type="number" value="0" placeholder="units" alignment="end"></calcite-input>
+          </calcite-label>
+
+          <calcite-label class="sub-option-item" layout="inline" disable-spacing>
+            <div class="sub-option-label">Capex</div>
+            <calcite-input class="sub-option-input" type="number" value="3000" placeholder="units" alignment="end"></calcite-input>
+          </calcite-label>
+
+        </div>
+        <div class="sub-option-panel content-col content-static">
+
+          <calcite-label class="sub-option-item" layout="inline" disable-spacing>
+            <div class="sub-option-label">Opex</div>
+            <calcite-input class="sub-option-input" type="number" value="15" placeholder="units" alignment="end"></calcite-input>
+          </calcite-label>
+
+          <calcite-label class="sub-option-item" layout="inline" disable-spacing>
+            <div class="sub-option-label">Land Cost</div>
+            <calcite-input class="sub-option-input" type="number" value="10" placeholder="units" alignment="end"></calcite-input>
+          </calcite-label>
+
+          <calcite-label class="sub-option-item" layout="inline" disable-spacing>
+            <div class="sub-option-label">Inflation</div>
+            <calcite-input class="sub-option-input" type="number" value="2" placeholder="units" alignment="end"></calcite-input>
+          </calcite-label>
+
+          <calcite-label class="sub-option-item" layout="inline" disable-spacing>
+            <div class="sub-option-label">Tax Rate</div>
+            <calcite-input class="sub-option-input" type="number" value="24" placeholder="units" alignment="end"></calcite-input>
+          </calcite-label>
+
+        </div>
+      </div>
+      <div class="leader-s trailer-s">
+        <calcite-button alignment="center" appearance="outline" color="blue" icon-end="play-f" width="full" round>RUN</calcite-button>
+      </div>
+    </calcite-tab>
+
+    <calcite-tab>
+      <calcite-block-section text="IIR by Region">
+
+        <table>
+          <thead>
+          <tr>
+            <th id="field-id">Region</th>
+            <th id="field-value">Rate</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td>1</td>
+            <td>10%</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>22%</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>45%</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td>13%</td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td>33%</td>
+          </tr>
+          </tbody>
+        </table>
+
+      </calcite-block-section>
+      <calcite-block-section text="IIR Weights" open>
+
+        <calcite-label layout="inline">
+          <div class="option-label">less than 0%</div>
+          <calcite-slider class="suitability-slider" min="0" max="9" value="5" ticks="1" snap></calcite-slider>
+          <calcite-chip color="blue" scale="s">5</calcite-chip>
+        </calcite-label>
+
+        <calcite-label layout="inline">
+          <div class="option-label">0% - 6%</div>
+          <calcite-slider class="suitability-slider" min="0" max="9" value="5" ticks="1" snap></calcite-slider>
+          <calcite-chip color="blue" scale="s">5</calcite-chip>
+        </calcite-label>
+
+        <calcite-label layout="inline">
+          <div class="option-label">6% - 20%</div>
+          <calcite-slider class="suitability-slider" min="0" max="9" value="5" ticks="1" snap></calcite-slider>
+          <calcite-chip color="blue" scale="s">5</calcite-chip>
+        </calcite-label>
+
+        <calcite-label layout="inline">
+          <div class="option-label">greater than 20%</div>
+          <calcite-slider class="suitability-slider" min="0" max="9" value="5" ticks="1" snap></calcite-slider>
+          <calcite-chip color="blue" scale="s">5</calcite-chip>
+        </calcite-label>
+
+      </calcite-block-section>
+    </calcite-tab>
+
+  </calcite-tabs>
+</calcite-block>-->
+
+<!-- POWER -->
+<!--<div id="power-potential-category-panel"></div>-->
+
+<!--<calcite-block heading="Power Potential" summary="wind power output" collapsible>
+  <calcite-icon slot="icon" icon="sensor"></calcite-icon>
+  <div slot="control" class="suitability-slider-container">
+    <calcite-slider class="suitability-slider" min="0" max="9" value="5" ticks="3" snap label-handles></calcite-slider>
+  </div>
+  &lt;!&ndash;<div class="panel-content panel-no-margin panel-no-border">
+
+    <calcite-label layout="inline-space-between">
+      <div>Turbine Height</div>
+      <calcite-input class="option-input" alignment="end" max="250" min="10" number-button-type="vertical" placeholder="height" suffix-text="meters" type="number" value="92"></calcite-input>
+    </calcite-label>
+
+    <calcite-label layout="inline">
+      <div class="option-label">0 - 300</div>
+      <calcite-slider class="suitability-slider" min="0" max="9" value="5" ticks="1" snap></calcite-slider>
+      <calcite-chip color="blue" scale="s">5</calcite-chip>
+    </calcite-label>
+
+    <calcite-label layout="inline">
+      <div class="option-label">300 - 1,000</div>
+      <calcite-slider class="suitability-slider" min="0" max="9" value="5" ticks="1" snap></calcite-slider>
+      <calcite-chip color="blue" scale="s">5</calcite-chip>
+    </calcite-label>
+
+    <calcite-label layout="inline">
+      <div class="option-label">1,000 - 2,000</div>
+      <calcite-slider class="suitability-slider" min="0" max="9" value="5" ticks="1" snap></calcite-slider>
+      <calcite-chip color="blue" scale="s">5</calcite-chip>
+    </calcite-label>
+
+    <calcite-label layout="inline">
+      <div class="option-label">2,000 - 3,000</div>
+      <calcite-slider class="suitability-slider" min="0" max="9" value="5" ticks="1" snap></calcite-slider>
+      <calcite-chip color="blue" scale="s">5</calcite-chip>
+    </calcite-label>
+
+  </div>&ndash;&gt;
+</calcite-block>-->
+
+<!-- GEO -->
+<!--<calcite-block heading="Geographic Variables" summary="location suitability" collapsible>
+  <calcite-icon slot="icon" icon="image-segmentation"></calcite-icon>
+  <div slot="control" class="suitability-slider-container">
+    <calcite-slider class="suitability-slider" min="0" max="9" value="5" ticks="3" snap label-handles></calcite-slider>
+  </div>
+
+  &lt;!&ndash;<div class="panel-content content-row content-static" style="justify-content:flex-end;gap:0.5rem;" hidden>
+    <calcite-label layout="inline" style="margin-top:0.75rem;">
+      Equal Weights
+      <calcite-switch id="equal-weights-switch"></calcite-switch>
+    </calcite-label>
+    <calcite-action id="geo-category-reset" appearance="" text="reset" text-enabled icon="reset" scale="s"></calcite-action>
+  </div>&ndash;&gt;
+
+  <div id="geo-variables-category-panel"></div>
+</calcite-block>-->

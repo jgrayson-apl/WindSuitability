@@ -1,0 +1,176 @@
+html, body {
+  padding: 0;
+  margin: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  overflow: hidden;
+}
+
+.calcite-theme-light,
+.calcite-theme-dark,
+.calcite-theme-app {
+  --calcite-ui-info: #99cc00;;
+  --calcite-ui-brand: #009900;
+  --calcite-ui-brand-hover: #99cc00;
+  --calcite-ui-brand-press: #ffff00;
+}
+
+.esri-widget,
+.esri-widget__heading,
+.esri-widget--button,
+.esri-menu,
+.esri-popup__button,
+.esri-popup__main-container,
+.esri-popup__header-container--button:hover,
+.esri-popup__pointer-direction,
+.esri-button {
+  background-color: var(--calcite-ui-foreground-1) !important;
+  color: var(--calcite-ui-text-2) !important;
+}
+
+.toggle-panel[hidden] {
+  display: none;
+}
+
+header[slot="header"] {
+  z-index: 99;
+  padding: 0 1rem 0 1rem;
+}
+
+.application-title {
+  color: var(--calcite-ui-brand);
+}
+
+
+calcite-loader#app-loader {
+  z-index: 1000;
+  top: calc(50vh - 112px) !important;
+}
+
+.esri-ui-corner calcite-loader {
+  pointer-events: none;
+  padding: 0;
+  right: 15px;
+}
+
+
+calcite-panel > div[slot="header-actions-end"] {
+  display: inline-flex;
+}
+
+calcite-notice {
+  z-index: 101;
+}
+
+#view-container {
+  flex-grow: 1;
+  flex-shrink: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+#bottom-container {
+  height: 220px;
+}
+
+#color-options-panel {
+  justify-content: flex-end;
+}
+
+.suitability-slider-container {
+  width: 105px;
+  margin: auto;
+}
+
+.suitability-slider {
+  width: 100%;
+  margin-right: 10px;
+  background: linear-gradient(to right, rgba(250, 54, 10, 0.1) 0%, rgba(243, 250, 30, 0.1) 50%, rgba(0, 110, 5, 0.1) 100%);
+}
+
+.suitability-slider:hover {
+  background: linear-gradient(to right, rgba(250, 54, 10, 0.5) 0%, rgba(243, 250, 30, 0.5) 50%, rgba(0, 110, 5, 0.5) 100%);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.suitability-slider:active {
+  background: linear-gradient(to right, #FA360A 0%, #F3FA1E 50%, #006E05 100%);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.suitability-slider-container .suitability-slider {
+  width: auto;
+}
+
+.sub-option-panel {
+  flex-basis: 50%;
+}
+
+.sub-option-item {
+  margin-bottom: 5px;
+}
+
+.sub-option-label {
+  text-align: right;
+  font-size: 9pt;
+  width: 60px;
+  padding-right: 5px;
+}
+
+.sub-option-input {
+  width: 100px;
+}
+
+.option-label {
+  font-size: 9pt;
+  text-align: right;
+  width: 200px;
+}
+
+
+.option-input {
+  width: 180px;
+}
+
+#irr-options-panel > .panel-content {
+  flex-basis: 100%;
+}
+
+#irr-options-panel calcite-label {
+  margin-bottom: 5px;
+}
+
+calcite-block {
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+
+calcite-tabs {
+  margin: auto 10px auto 10px;
+}
+
+calcite-tab {
+  width: 100%;
+}
+
+.ramp-preview {
+  margin: 0 5px 0 5px;
+  width: 80px;
+  height: 1rem;
+}
+
+.ramp-preview-label {
+  /* ... */
+}
+
+.ramp-green-to-red {
+  background: linear-gradient(to right, #006E05 0%, #F3FA1E 50%, #FA360A 100%);
+}
+
+.ramp-red-to-green {
+  background: linear-gradient(to right, #FA360A 0%, #F3FA1E 50%, #006E05 100%);
+}
+

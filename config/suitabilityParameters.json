@@ -1,0 +1,700 @@
+{
+  "analysis": {
+    "zero_raster": 8
+  },
+  "groups": [
+    {
+      "name": "investment_rate",
+      "label": "Investment Rate of Return (IRR)",
+      "description": "investment considerations",
+      "icon": "automation",
+      "inputLabel": "Power Price Inputs",
+      "outputLabel": "Rates by Region",
+      "inputInfos": [
+        {
+          "type": "number",
+          "name": "_capacity",
+          "label": "Capacity",
+          "min": 0,
+          "max": 10000,
+          "value": 5000,
+          "suffix": "MW"
+        },
+        {
+          "type": "number",
+          "name": "_capacity_factor",
+          "label": "Capacity Factor",
+          "min": 0,
+          "max": 1,
+          "value": 0.35,
+          "suffix": "%"
+        },
+        {
+          "type": "number",
+          "name": "_pwr_price",
+          "label": "Power Price",
+          "min": 0,
+          "max": 100,
+          "value": 27.997,
+          "suffix": "$/MWh"
+        },
+        {
+          "type": "number",
+          "name": "_devex",
+          "label": "Devex",
+          "min": 0,
+          "max": 100,
+          "value": 0,
+          "suffix": "$m"
+        },
+        {
+          "type": "number",
+          "name": "_capex",
+          "label": "Capex",
+          "min": 0,
+          "max": 10000,
+          "value": 3000,
+          "suffix": "$m"
+        },
+        {
+          "type": "number",
+          "name": "_opex",
+          "label": "Opex",
+          "min": 0,
+          "max": 100,
+          "value": 15,
+          "suffix": "$m"
+        },
+        {
+          "type": "number",
+          "name": "_upfront_land_cost",
+          "label": "Upfront Land Cost",
+          "min": 0,
+          "max": 100,
+          "value": 10,
+          "suffix": "$m"
+        },
+        {
+          "type": "number",
+          "name": "_pct",
+          "label": "PTC",
+          "min": 0,
+          "max": 100,
+          "value": 25,
+          "suffix": "PTC"
+        },
+        {
+          "type": "number",
+          "name": "_inflation",
+          "label": "Inflation",
+          "min": 0,
+          "max": 1,
+          "value": 0.02,
+          "suffix": "%"
+        },
+        {
+          "type": "number",
+          "name": "_tax_rate",
+          "label": "Tax Rate",
+          "min": 0,
+          "max": 1,
+          "value": 0.24,
+          "suffix": "%"
+        },
+        {
+          "type": "number",
+          "name": "_leverage",
+          "label": "Leverage",
+          "min": 0,
+          "max": 1,
+          "value": 0,
+          "suffix": "%"
+        },
+        {
+          "type": "number",
+          "name": "_interest_rate",
+          "label": "Interest Rate",
+          "min": 0,
+          "max": 1,
+          "value": 0.03,
+          "suffix": "%"
+        },
+        {
+          "type": "number",
+          "name": "_discount_rate",
+          "label": "Discount Rate",
+          "min": 0,
+          "max": 1,
+          "value": 0.08,
+          "suffix": "%"
+        },
+        {
+          "type": "number",
+          "name": "_debt_term",
+          "label": "Debt Term",
+          "min": 0,
+          "max": 100,
+          "value": 15,
+          "suffix": "years"
+        }
+      ],
+      "remap": {
+        "name": "irr_zones",
+        "outputMin": -50,
+        "outputMax": 100,
+        "InputRanges": [
+          1,
+          2,
+          2,
+          3,
+          3,
+          4,
+          4,
+          5,
+          5,
+          6,
+          6,
+          7,
+          7,
+          8,
+          8,
+          9,
+          9,
+          10
+        ],
+        "OutputValues": [
+          -40,
+          -25,
+          0,
+          10,
+          40,
+          55,
+          70,
+          85,
+          90
+        ]
+      },
+      "sources": [
+        {
+          "id": 9,
+          "name": "irr",
+          "label": "IRR Weights",
+          "description": "investment considerations",
+          "icon": "download",
+          "type": "percent",
+          "factor": 1,
+          "weight": 5,
+          "disabled": false,
+          "categoryInfos": [
+            {
+              "min": -50,
+              "max": -35,
+              "weight": 1
+            },
+            {
+              "min": -35,
+              "max": -20,
+              "weight": 2
+            },
+            {
+              "min": -20,
+              "max": 5,
+              "weight": 3
+            },
+            {
+              "min": 5,
+              "max": 20,
+              "weight": 4
+            },
+            {
+              "min": 20,
+              "max": 35,
+              "weight": 5
+            },
+            {
+              "min": 35,
+              "max": 50,
+              "weight": 6
+            },
+            {
+              "min": 50,
+              "max": 65,
+              "weight": 7
+            },
+            {
+              "min": 65,
+              "max": 80,
+              "weight": 8
+            },
+            {
+              "min": 80,
+              "max": 101,
+              "weight": 9
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": null,
+      "name": "power",
+      "label": "Power Potential",
+      "description": "wind power output",
+      "icon": "sensor",
+      "type": "numeric",
+      "factor": 1,
+      "weight": 5,
+      "disabled": true,
+      "inputInfos": [
+        {
+          "type": "number",
+          "label": "Turbine Height",
+          "range": [
+            10,
+            250
+          ],
+          "value": 92,
+          "suffix": "meters"
+        }
+      ],
+      "categoryInfos": [
+        {
+          "min": 0,
+          "max": 300,
+          "weight": 1
+        },
+        {
+          "min": 300,
+          "max": 1000,
+          "weight": 3
+        },
+        {
+          "min": 1000,
+          "max": 2000,
+          "weight": 5
+        },
+        {
+          "min": 2000,
+          "max": 30000,
+          "weight": 7
+        }
+      ]
+    },
+    {
+      "name": "geog_vars",
+      "label": "Geographic Variables",
+      "description": "location suitability",
+      "icon": "image-segmentation",
+      "weight": 5,
+      "disabled": false,
+      "sources": [
+        {
+          "id": 1,
+          "name": "dist_faa",
+          "label": "FAA Airports",
+          "description": "dist to airports (kms)",
+          "icon": "plane",
+          "type": "numeric",
+          "factor": 1000,
+          "weight": 5,
+          "inputInfos": [],
+          "categoryInfos": [
+            {
+              "min": 0,
+              "max": 2000,
+              "weight": 1
+            },
+            {
+              "min": 2000,
+              "max": 3000,
+              "weight": 2
+            },
+            {
+              "min": 3000,
+              "max": 4000,
+              "weight": 3
+            },
+            {
+              "min": 40000,
+              "max": 50000,
+              "weight": 4
+            },
+            {
+              "min": 50000,
+              "max": 60000,
+              "weight": 5
+            },
+            {
+              "min": 60000,
+              "max": 70000,
+              "weight": 6
+            },
+            {
+              "min": 70000,
+              "max": 80000,
+              "weight": 7
+            },
+            {
+              "min": 90000,
+              "max": 100000,
+              "weight": 8
+            },
+            {
+              "min": 100000,
+              "max": 10000000,
+              "weight": 9
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "name": "dist_fed",
+          "label": "Federal Lands",
+          "description": "dist to fed lands (kms)",
+          "icon": "locator",
+          "type": "numeric",
+          "factor": 1000,
+          "weight": 5,
+          "inputInfos": [],
+          "categoryInfos": [
+            {
+              "min": 0,
+              "max": 5000,
+              "weight": 1
+            },
+            {
+              "min": 5000,
+              "max": 10000,
+              "weight": 2
+            },
+            {
+              "min": 10000,
+              "max": 15000,
+              "weight": 3
+            },
+            {
+              "min": 15000,
+              "max": 20000,
+              "weight": 4
+            },
+            {
+              "min": 20000,
+              "max": 25000,
+              "weight": 5
+            },
+            {
+              "min": 25000,
+              "max": 30000,
+              "weight": 6
+            },
+            {
+              "min": 30000,
+              "max": 35000,
+              "weight": 7
+            },
+            {
+              "min": 35000,
+              "max": 40000,
+              "weight": 8
+            },
+            {
+              "min": 45000,
+              "max": 10000000,
+              "weight": 9
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "name": "dist_grid",
+          "label": "Grid Above 30",
+          "description": "dist to grid (kms)",
+          "icon": "grid-unit",
+          "type": "numeric",
+          "factor": 1000,
+          "weight": 5,
+          "inputInfos": [],
+          "categoryInfos": [
+            {
+              "min": 0,
+              "max": 20000,
+              "weight": 9
+            },
+            {
+              "min": 20000,
+              "max": 40000,
+              "weight": 8
+            },
+            {
+              "min": 40000,
+              "max": 60000,
+              "weight": 7
+            },
+            {
+              "min": 60000,
+              "max": 80000,
+              "weight": 6
+            },
+            {
+              "min": 80000,
+              "max": 100000,
+              "weight": 5
+            },
+            {
+              "min": 100000,
+              "max": 120000,
+              "weight": 4
+            },
+            {
+              "min": 120000,
+              "max": 140000,
+              "weight": 3
+            },
+            {
+              "min": 140000,
+              "max": 160000,
+              "weight": 2
+            },
+            {
+              "min": 160000,
+              "max": 180000,
+              "weight": 1
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "name": "dist_sub",
+          "label": "Substations",
+          "description": "dist to subst (kms)",
+          "icon": "sensor",
+          "type": "numeric",
+          "factor": 1000,
+          "weight": 5,
+          "inputInfos": [],
+          "categoryInfos": [
+            {
+              "min": 0,
+              "max": 30000,
+              "weight": 9
+            },
+            {
+              "min": 30000,
+              "max": 60000,
+              "weight": 8
+            },
+            {
+              "min": 60000,
+              "max": 90000,
+              "weight": 7
+            },
+            {
+              "min": 90000,
+              "max": 120000,
+              "weight": 6
+            },
+            {
+              "min": 120000,
+              "max": 150000,
+              "weight": 5
+            },
+            {
+              "min": 150000,
+              "max": 180000,
+              "weight": 4
+            },
+            {
+              "min": 180000,
+              "max": 210000,
+              "weight": 3
+            },
+            {
+              "min": 210000,
+              "max": 240000,
+              "weight": 2
+            },
+            {
+              "min": 240000,
+              "max": 270000,
+              "weight": 1
+            }
+          ]
+        },
+        {
+          "id": 5,
+          "name": "dist_trans",
+          "label": "Transmission",
+          "description": "dist to trans (kms)",
+          "icon": "wifi",
+          "type": "numeric",
+          "factor": 1000,
+          "weight": 5,
+          "inputInfos": [],
+          "categoryInfos": [
+            {
+              "min": 0,
+              "max": 30000,
+              "weight": 9
+            },
+            {
+              "min": 30000,
+              "max": 60000,
+              "weight": 8
+            },
+            {
+              "min": 60000,
+              "max": 90000,
+              "weight": 7
+            },
+            {
+              "min": 90000,
+              "max": 120000,
+              "weight": 6
+            },
+            {
+              "min": 120000,
+              "max": 150000,
+              "weight": 5
+            },
+            {
+              "min": 150000,
+              "max": 180000,
+              "weight": 4
+            },
+            {
+              "min": 180000,
+              "max": 210000,
+              "weight": 3
+            },
+            {
+              "min": 210000,
+              "max": 240000,
+              "weight": 2
+            },
+            {
+              "min": 240000,
+              "max": 270000,
+              "weight": 1
+            }
+          ]
+        },
+        {
+          "id": 6,
+          "name": "dist_pop",
+          "label": "Population",
+          "description": "dist to pop (kms)",
+          "icon": "person",
+          "type": "numeric",
+          "factor": 1000,
+          "weight": 5,
+          "inputInfos": [],
+          "categoryInfos": [
+            {
+              "min": 0,
+              "max": 75000,
+              "weight": 1
+            },
+            {
+              "min": 75000,
+              "max": 150000,
+              "weight": 2
+            },
+            {
+              "min": 150000,
+              "max": 225000,
+              "weight": 3
+            },
+            {
+              "min": 225000,
+              "max": 300000,
+              "weight": 4
+            },
+            {
+              "min": 300000,
+              "max": 375000,
+              "weight": 5
+            },
+            {
+              "min": 375000,
+              "max": 450000,
+              "weight": 6
+            },
+            {
+              "min": 450000,
+              "max": 525000,
+              "weight": 7
+            },
+            {
+              "min": 525000,
+              "max": 600000,
+              "weight": 8
+            },
+            {
+              "min": 600000,
+              "max": 675000,
+              "weight": 9
+            }
+          ]
+        },
+        {
+          "id": 7,
+          "name": "Slope",
+          "label": "Slope",
+          "description": "percent elevation slope",
+          "icon": "hillshade-effect",
+          "type": "percent",
+          "factor": 1,
+          "weight": 5,
+          "inputInfos": [],
+          "categoryInfos": [
+            {
+              "min": 0,
+              "max": 5,
+              "weight": 9
+            },
+            {
+              "min": 5,
+              "max": 10,
+              "weight": 8
+            },
+            {
+              "min": 10,
+              "max": 15,
+              "weight": 7
+            },
+            {
+              "min": 15,
+              "max": 20,
+              "weight": 6
+            },
+            {
+              "min": 20,
+              "max": 25,
+              "weight": 5
+            },
+            {
+              "min": 25,
+              "max": 30,
+              "weight": 4
+            },
+            {
+              "min": 30,
+              "max": 35,
+              "weight": 3
+            },
+            {
+              "min": 35,
+              "max": 40,
+              "weight": 2
+            },
+            {
+              "min": 40,
+              "max": 45,
+              "weight": 1
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
