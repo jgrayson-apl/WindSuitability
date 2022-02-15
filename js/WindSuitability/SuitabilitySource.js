@@ -36,12 +36,6 @@ class SuitabilitySource extends HTMLElement {
    *
    * @type {string}
    */
-  zeroRaster;
-
-  /**
-   *
-   * @type {string}
-   */
   id;
 
   /**
@@ -117,7 +111,6 @@ class SuitabilitySource extends HTMLElement {
 
   /**
    *
-   * @param {number} zeroRaster
    * @param {number} id
    * @param {string} name
    * @param {string} label
@@ -130,10 +123,8 @@ class SuitabilitySource extends HTMLElement {
    * @param {[]} inputInfos
    * @param {[]} categoryInfos
    */
-  constructor({zeroRaster, id, name, label, description, type, factor, icon, weight, disabled= false, inputInfos = [], categoryInfos = []}) {
+  constructor({id, name, label, description, type, factor, icon, weight, disabled = false, inputInfos = [], categoryInfos = []}) {
     super();
-
-    this.zeroRaster = `$${ zeroRaster }`;
 
     this.id = id ? `$${ id }` : null;
     this.name = (name || '');
@@ -174,9 +165,6 @@ class SuitabilitySource extends HTMLElement {
       <div class="parameters-container"></div>      
     `;
 
-    // <suitability-weight-parameter min="1" max="9" weight="${ this.weight }" source-type="${ this.type }" source-factor="${ this.factor }"></suitability-weight-parameter>
-    //<calcite-slider className="weight-slider" min="0" max="9" value="${ this.weight }" ticks="3" snap label-handles></calcite-slider>
-
     // ATTACH CONTAINER TO SHADOW ROOT //
     this.attachShadow({mode: 'open'}).appendChild(this.container);
   }
@@ -194,24 +182,24 @@ class SuitabilitySource extends HTMLElement {
       this.weight = weightSlider.weight;
     });
     weightSlider.addEventListener('weight-change', () => {
+      this.dispatchEvent(new CustomEvent('weight-change', {}));
       this.dispatchEvent(new CustomEvent('parameters-change', {}));
     });
     weightSlider.addEventListener('disabled-change', () => {
       this.disabled = parametersContainer.toggleAttribute('disabled', weightSlider.disabled);
+      this.dispatchEvent(new CustomEvent('disabled-change', {}));
       this.dispatchEvent(new CustomEvent('parameters-change', {}));
     });
 
     const weightSliderContainer = this.shadowRoot.querySelector('[slot="control"]');
     weightSliderContainer.append(weightSlider);
 
-
     // CREATE INPUT PARAMETERS //
     const inputParameters = this.inputInfos.map(inputInfo => {
       const inputParameter = new SuitabilityInputParameter(inputInfo);
-      inputParameter.addEventListener('weight-change', ({}) => {
+      inputParameter.addEventListener('weight-change', () => {
         this.dispatchEvent(new CustomEvent('parameters-change', {}));
       });
-
       return inputParameter;
     });
     parametersContainer.append(...inputParameters);
@@ -222,7 +210,7 @@ class SuitabilitySource extends HTMLElement {
       const label = this._getParameterLabel(categoryInfo);
 
       const weightParameter = new SuitabilityWeightParameter({...categoryInfo, canDisable: false, label});
-      weightParameter.addEventListener('weight-change', ({}) => {
+      weightParameter.addEventListener('weight-change', () => {
         this.dispatchEvent(new CustomEvent('parameters-change', {}));
       });
       weightParameter.addEventListener('disabled-change', () => {
@@ -231,8 +219,6 @@ class SuitabilitySource extends HTMLElement {
 
       return weightParameter;
     });
-
-    //this.sourceParameters = [...inputParameters, ...categoryParameters];
 
     parametersContainer.append(...this.sourceParameters);
   }
@@ -291,20 +277,11 @@ class SuitabilitySource extends HTMLElement {
   /**
    *
    */
-  getAnalysisParameters(totalWeights) {
+  getAnalysisParameters() {
 
     const analysisParameters = {};
 
-    if (!this.id) { return analysisParameters; }
-
-    if (this.disabled) {
-
-      analysisParameters[this.name] = this.zeroRaster;
-      analysisParameters[`Weight_${ this.name }`] = 0.0;
-      analysisParameters[`InputRanges_${ this.name }`] = [0, 1];
-      analysisParameters[`OutputValues_${ this.name }`] = [0];
-
-    } else {
+    if (this.id && !this.disabled) {
 
       const {inputRanges, outputValues, noDataRanges} = this.sourceParameters.reduce((infos, sourceParameter) => {
         if (sourceParameter.disabled) {
@@ -316,11 +293,14 @@ class SuitabilitySource extends HTMLElement {
         return infos;
       }, {inputRanges: [], outputValues: [], noDataRanges: []});
 
-      analysisParameters[this.name] = this.id;
-      analysisParameters[`Weight_${ this.name }`] = (totalWeights != null) ? (this.weight / totalWeights) : this.weight;
+      // NAME //
+      (this.id > 0) && (analysisParameters[this.name] = this.id);
+      // REMAP //
       analysisParameters[`InputRanges_${ this.name }`] = inputRanges;
       analysisParameters[`OutputValues_${ this.name }`] = outputValues;
-      //noDataRanges.length && (analysisParameters[`NoDataRanges_${ this.name }`] = noDataRanges);
+      noDataRanges.length && (analysisParameters[`noDataRanges_${ this.name }`] = noDataRanges);
+      // WEIGHT //
+      analysisParameters[`Weight_${ this.name }`] = this.weight;
 
     }
 

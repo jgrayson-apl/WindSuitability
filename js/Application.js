@@ -27,9 +27,14 @@ class Application extends AppBase {
   // PORTAL //
   portal;
 
-  // SOURCES //
+  /**
+   * @type {SuitabilitySource|SuitabilityGeographicVariablesGroup|SuitabilityIRRGroup}
+   */
   suitabilitySources;
 
+  /**
+   *
+   */
   constructor() {
     super();
 
@@ -143,38 +148,30 @@ class Application extends AppBase {
         // LOAD SUITABILITY CONFIG //
         this.loadSuitabilityConfig().then((suitabilityParameters) => {
 
-          // ZERO RASTER //
-          this.zeroRaster = suitabilityParameters.analysis.zero_raster;
-
           // INITIALIZE ANALYSIS //
           this.initializeWindSuitabilityAnalysis(view).then(() => {
 
-            // SUITABILITY SOURCES //
+            /**
+             * SUITABILITY SOURCES
+             *
+             * @type {SuitabilitySource | SuitabilityGeographicVariablesGroup | SuitabilityIRRGroup}
+             */
             this.suitabilitySources = suitabilityParameters.groups.map(suitabilityGroupInfo => {
 
               let suitabilitySource;
 
               switch (suitabilityGroupInfo.name) {
                 case 'power':
-                  suitabilitySource = new SuitabilitySource({
-                    zeroRaster: this.zeroRaster,
-                    ...suitabilityGroupInfo
-                  });
+                  suitabilitySource = new SuitabilitySource(suitabilityGroupInfo);
                   break;
 
                 case 'geog_vars':
-                  suitabilitySource = new SuitabilityGeographicVariablesGroup({
-                    zeroRaster: this.zeroRaster,
-                    ...suitabilityGroupInfo
-                  });
+                  suitabilitySource = new SuitabilityGeographicVariablesGroup(suitabilityGroupInfo);
                   break;
 
-                case 'investment_rate':
-                  suitabilitySource = new SuitabilityIRRGroup({
-                    irrService: new InvestmentRateOfReturnService({view, remap: suitabilityGroupInfo.remap}),
-                    zeroRaster: this.zeroRaster,
-                    ...suitabilityGroupInfo
-                  });
+                case 'irr':
+                  const irrService = new InvestmentRateOfReturnService({view, remap: suitabilityGroupInfo.remap});
+                  suitabilitySource = new SuitabilityIRRGroup({irrService, ...suitabilityGroupInfo});
                   break;
               }
 
@@ -199,7 +196,7 @@ class Application extends AppBase {
 
   /**
    *
-   * @returns {Promise}
+   * @returns {Promise<Object>}
    */
   loadSuitabilityConfig() {
     return new Promise((resolve, reject) => {
@@ -219,8 +216,13 @@ class Application extends AppBase {
       const suitabilityLayer = view.map.layers.find(l => l.title === 'Wind Suitability Analysis');
       suitabilityLayer.load().then(() => {
 
-        const analysisFunctionName = 'Plus_8_Mosaic_clr';
+        // DEFAULT STATE //
+        suitabilityLayer.renderingRule = {functionName: "None"};
 
+        // ANALYSIS FUNCTION //
+        const analysisFunctionName = 'Calc_Arith_8_ANF_clr';
+
+        // DEFAULT ANALYSIS PARAMETERS //
         const defaultAnalysisParameters = {
           dist_faa: "$1",
           dist_fed: "$2",
@@ -228,37 +230,49 @@ class Application extends AppBase {
           dist_sub: "$4",
           dist_trans: "$5",
           dist_pop: "$6",
-          slope: "$7",
+          steepness: "$7",
           irr_zones: "$9"
         };
 
         this.updateSuitabilityAnalysis = () => {
 
-          let analysisParameters = defaultAnalysisParameters;
-
           if (this.suitabilitySources?.length) {
 
-            const totalGroupWeights = this.suitabilitySources.reduce((total, suitabilitySource) => {
-              return suitabilitySource.disabled ? total : (total + suitabilitySource.weight);
-            }, 0);
+            const {analysisParameters, names, totalWeight} = this.suitabilitySources.reduce((infos, suitabilitySource) => {
 
-            analysisParameters = this.suitabilitySources.reduce((params, suitabilitySource) => {
-              return {...params, ...suitabilitySource.getAnalysisParameters(totalGroupWeights)};
-            }, {});
+              if (!suitabilitySource.disabled) {
+                const params = suitabilitySource.getAnalysisParameters();
+                if (params) {
+                  infos.analysisParameters = {...infos.analysisParameters, ...params};
+                  infos.names.push(`${ suitabilitySource.name }_weighted`);
+                  infos.totalWeight += suitabilitySource.weight;
+                }
+              }
 
+              return infos;
+            }, {analysisParameters: defaultAnalysisParameters, names: [], totalWeight: 0});
+
+            // DO WE HAVE RASTERS TO ANALYZE? //
+            if (names.length) {
+
+              // SET OVERALL EXPRESSION //
+              analysisParameters['Calc_Expression_2'] = `((${ names.join(' + ') })/${ totalWeight })`;
+
+              //
+              // SET ANALYSIS PARAMETERS //
+              //
+              suitabilityLayer.renderingRule = {
+                functionName: analysisFunctionName,
+                functionArguments: analysisParameters
+              };
+
+              console.info(analysisParameters);
+            } else {
+              suitabilityLayer.renderingRule = {functionName: "None"};
+            }
+          } else {
+            suitabilityLayer.renderingRule = {functionName: "None"};
           }
-          console.info(analysisParameters);
-
-          suitabilityLayer.renderingRule = {
-            functionName: analysisFunctionName,
-            functionArguments: analysisParameters
-          };
-
-
-          if (suitabilityLayer.customParameters != null) {
-            suitabilityLayer.customParameters = null;
-          }
-
         };
 
         resolve();

@@ -41,9 +41,9 @@ class SuitabilityIRRGroup extends HTMLElement {
 
   /**
    *
-   * @type {number}
+   * @type {string}
    */
-  zeroRaster;
+  name;
 
   /**
    *
@@ -70,9 +70,14 @@ class SuitabilityIRRGroup extends HTMLElement {
   weight;
 
   /**
+   * @type {boolean}
+   */
+  disabled;
+
+  /**
    *
    * @param {InvestmentRateOfReturnService} irrService
-   * @param {number} zeroRaster
+   * @param {string} name
    * @param {string} label
    * @param {string} description
    * @param {string} icon
@@ -83,32 +88,33 @@ class SuitabilityIRRGroup extends HTMLElement {
    * @param {{InputRanges,OutputValues}} remap
    * @param {SuitabilitySource[]} sources
    */
-  constructor({irrService, zeroRaster, label, description, icon, weight, inputLabel, outputLabel, inputInfos, remap, sources}) {
+  constructor({irrService, name, label, description, icon, weight, inputLabel, outputLabel, inputInfos, remap, sources}) {
     super();
 
     this.irrService = irrService;
-    this.zeroRaster = zeroRaster;
 
+    this.name = (name || 'irr');
     this.label = (label || '');
     this.description = (description || '');
     this.icon = (icon || 'information');
     this.weight = (weight || 5);
+    this.disabled = false;
 
     this.inputLabel = (inputLabel || '');
     this.outputLabel = (outputLabel || '');
 
     this.inputInfos = (inputInfos || []);
-    this.remap = (remap || {InputRanges: [], OutputValues: []});
+    this.remap = (remap || {name: 'irr_zones', InputRanges: [], OutputValues: []});
     this.sources = (sources || []);
 
     this.container = document.createElement('calcite-block');
     this.container.setAttribute('heading', this.label);
     this.container.setAttribute('summary', this.description);
     this.container.toggleAttribute('collapsible', true);
+    this.container.toggleAttribute('open', true);
     this.container.innerHTML = `      
       <style>
-        /*@import "https://js.arcgis.com/calcite-components/1.0.0-beta.69/calcite.css";*/
-              
+        /*@import "https://js.arcgis.com/calcite-components/1.0.0-beta.69/calcite.css";*/              
                        
         .inputs-panel {
           margin: 3px;
@@ -194,11 +200,14 @@ class SuitabilityIRRGroup extends HTMLElement {
     const zonesContainer = this.shadowRoot.querySelector('.zones-container');
     zonesContainer.append(...this.inputParameters);
 
-
     // SUITABILITY SOURCES //
     this.suitabilitySources = this.sources.map(sourceParams => {
 
-      const suitabilitySource = new SuitabilitySource({zeroRaster: this.zeroRaster, ...sourceParams});
+      const suitabilitySource = new SuitabilitySource(sourceParams);
+      suitabilitySource.addEventListener('weight-change', () => {
+        this.weight = suitabilitySource.weight;
+        this.dispatchEvent(new CustomEvent('parameters-change', {}));
+      });
       suitabilitySource.addEventListener('parameters-change', () => {
         this.dispatchEvent(new CustomEvent('parameters-change', {}));
       });
@@ -206,6 +215,8 @@ class SuitabilityIRRGroup extends HTMLElement {
         this.disabled = suitabilitySource.disabled;
         this.dispatchEvent(new CustomEvent('parameters-change', {}));
       });
+
+
 
       return suitabilitySource;
     });
@@ -218,7 +229,7 @@ class SuitabilityIRRGroup extends HTMLElement {
     const updateRegionsList = () => {
       // DISPLAY LIST OF NEW REGION RATES //
       const regionRatesRows = this.remap.OutputValues.map((outputValue, outputValueIdx) => {
-        const regionId = this.remap.InputRanges[outputValueIdx * 2];
+        const regionId = this.remap.InputRanges[outputValueIdx][0];
         return `<tr><td>${ regionId }</td><td>${ outputValue }%</td></tr>`
       });
       regionsRatesList.innerHTML = regionRatesRows.join('');
@@ -238,7 +249,6 @@ class SuitabilityIRRGroup extends HTMLElement {
         console.info('Parameters for calling IIR Service: ', powerPriceInputs);
         this.irrService.getRatesByRegion(powerPriceInputs).then(({irrValues}) => {
           console.info('Results of calling IIR Service: ', irrValues);
-
           this.remap.OutputValues = irrValues;
           resolve();
         });
@@ -262,28 +272,26 @@ class SuitabilityIRRGroup extends HTMLElement {
 
   /**
    *
-   * @param {number} totalGroupWeights
    * @returns {Object}
    */
-  getAnalysisParameters(totalGroupWeights) {
-    if (this.disabled) {
-      return {};
+  getAnalysisParameters() {
 
-    } else {
+    let regionRemapParameters = {};
 
-      const regionRemapParameters = {}
+    if (!this.disabled) {
+
+      const analysisParameters = this.suitabilitySources.reduce((params, suitabilitySource) => {
+        return {...params, ...suitabilitySource.getAnalysisParameters()};
+      }, {});
+
+      regionRemapParameters[this.remap.name] = this.remap.id;
       regionRemapParameters[`InputRanges_${ this.remap.name }`] = this.remap.InputRanges;
       regionRemapParameters[`OutputValues_${ this.remap.name }`] = this.remap.OutputValues;
 
-      const analysisParameters = this.suitabilitySources.reduce((params, suitabilitySource) => {
-        return {...params, ...suitabilitySource.getAnalysisParameters(totalGroupWeights)};
-      }, {});
-
-      analysisParameters[`irr_zones`] = analysisParameters.irr;
-      delete analysisParameters.irr;
-
-      return {...regionRemapParameters, ...analysisParameters};
+      regionRemapParameters = {...regionRemapParameters, ...analysisParameters};
     }
+
+    return regionRemapParameters;
   }
 
 }

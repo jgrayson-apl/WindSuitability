@@ -36,12 +36,6 @@ class SuitabilityGeographicVariablesGroup extends HTMLElement {
 
   /**
    *
-   * @type {number}
-   */
-  zeroRaster;
-
-  /**
-   *
    * @type {string}
    */
   name;
@@ -70,10 +64,14 @@ class SuitabilityGeographicVariablesGroup extends HTMLElement {
    */
   weight;
 
+  /**
+   * @type {boolean}
+   */
+  disabled;
+
 
   /**
    *
-   * @param {number} zeroRaster
    * @param {string} name
    * @param {string} label
    * @param {string} description
@@ -82,10 +80,8 @@ class SuitabilityGeographicVariablesGroup extends HTMLElement {
    * @param {boolean} disabled
    * @param {SuitabilitySource[]} sources
    */
-  constructor({zeroRaster, name, label, description, icon, weight, disabled, sources}) {
+  constructor({name, label, description, icon, weight, disabled, sources}) {
     super();
-
-    this.zeroRaster = zeroRaster;
 
     this.name = (name || '');
     this.label = (label || '');
@@ -132,7 +128,7 @@ class SuitabilityGeographicVariablesGroup extends HTMLElement {
 
     const groupContainer = this.shadowRoot.querySelector('.group-container');
 
-    const weightSlider = new SuitabilityWeightParameter({min: 1, max: 9, weight: this.weight, widthScale: 's' });
+    const weightSlider = new SuitabilityWeightParameter({min: 1, max: 9, weight: this.weight, widthScale: 's'});
     weightSlider.addEventListener('weight-input', () => {
       this.weight = weightSlider.weight;
     });
@@ -140,17 +136,16 @@ class SuitabilityGeographicVariablesGroup extends HTMLElement {
       this.dispatchEvent(new CustomEvent('parameters-change', {}));
     });
     weightSlider.addEventListener('disabled-change', () => {
-      groupContainer.toggleAttribute('disabled', weightSlider.disabled);
+      this.disabled = groupContainer.toggleAttribute('disabled', weightSlider.disabled);
       this.dispatchEvent(new CustomEvent('parameters-change', {}));
     });
 
     const weightSliderContainer = this.shadowRoot.querySelector('[slot="control"]');
     weightSliderContainer.append(weightSlider);
 
-
     this.suitabilitySources = this.sources.map(sourceParams => {
 
-      const suitabilitySource = new SuitabilitySource({zeroRaster: this.zeroRaster, ...sourceParams});
+      const suitabilitySource = new SuitabilitySource(sourceParams);
       suitabilitySource.addEventListener('parameters-change', () => {
         this.dispatchEvent(new CustomEvent('parameters-change', {}));
       });
@@ -163,28 +158,33 @@ class SuitabilityGeographicVariablesGroup extends HTMLElement {
 
   /**
    *
-   * @param {number} totalGroupWeights
    * @returns {Object}
    */
-  getAnalysisParameters(totalGroupWeights) {
+  getAnalysisParameters() {
 
-    if (this.disabled) {
-      return {};
+    if (!this.disabled) {
 
-    } else {
+      const {analysisParameters, names, totalWeight} = this.suitabilitySources.reduce((infos, suitabilitySource) => {
 
-      const totalWeights = this.suitabilitySources.reduce((total, suitabilitySource) => {
-        return (total + suitabilitySource.weight);
-      }, 0);
+        if (!suitabilitySource.disabled) {
+          const params = suitabilitySource.getAnalysisParameters();
+          infos.analysisParameters = {...infos.analysisParameters, ...params};
+          infos.names.push(suitabilitySource.name);
+          infos.totalWeight += suitabilitySource.weight;
+        }
 
-      const analysisParameters = this.suitabilitySources.reduce((params, suitabilitySource) => {
-        return {...params, ...suitabilitySource.getAnalysisParameters(totalWeights)};
-      }, {});
+        return infos;
+      }, {analysisParameters: {}, names: [], totalWeight: 0});
 
-      analysisParameters[`Weight_${ this.name }`] = (this.weight / totalGroupWeights);
+      if (names.length) {
 
-      return analysisParameters;
-    }
+        analysisParameters['Calc_Expression_1'] = `((${ names.join(' + ') })/${ totalWeight })`;
+        analysisParameters[`Weight_${ this.name }`] = this.weight;
+
+        return analysisParameters;
+      } else { return null;}
+    } else { return null; }
+
   }
 
 }

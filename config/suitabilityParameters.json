@@ -1,10 +1,7 @@
 {
-  "analysis": {
-    "zero_raster": 8
-  },
   "groups": [
     {
-      "name": "investment_rate",
+      "name": "irr",
       "label": "Investment Rate of Return (IRR)",
       "description": "investment considerations",
       "icon": "automation",
@@ -139,28 +136,20 @@
         }
       ],
       "remap": {
+        "id": "$9",
         "name": "irr_zones",
         "outputMin": -50,
         "outputMax": 100,
         "InputRanges": [
-          1,
-          2,
-          2,
-          3,
-          3,
-          4,
-          4,
-          5,
-          5,
-          6,
-          6,
-          7,
-          7,
-          8,
-          8,
-          9,
-          9,
-          10
+          [1,2],
+          [2,3],
+          [3,4],
+          [4,5],
+          [5,6],
+          [6,7],
+          [7,8],
+          [8,9],
+          [9,10]
         ],
         "OutputValues": [
           -40,
@@ -176,7 +165,7 @@
       },
       "sources": [
         {
-          "id": 9,
+          "id": -1,
           "name": "irr",
           "label": "IRR Weights",
           "description": "investment considerations",
@@ -236,8 +225,8 @@
       ]
     },
     {
-      "id": null,
       "name": "power",
+      "id": null,
       "label": "Power Potential",
       "description": "wind power output",
       "icon": "sensor",
@@ -638,7 +627,7 @@
         },
         {
           "id": 7,
-          "name": "Slope",
+          "name": "steepness",
           "label": "Slope",
           "description": "percent elevation slope",
           "icon": "hillshade-effect",
